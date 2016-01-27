@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="CampaignReactor.Controls.Server.EditControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CampaignReactor.Controls.Server"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" DataContext="{Binding RelativeSource={RelativeSource self}}">
+    <Grid>
+        <DataGrid x:Name="hostsDataGrid" ItemsSource="{Binding Path=hosts}" VerticalAlignment="Top" HorizontalAlignment="Left" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="false" CanUserResizeRows="False" CanUserSortColumns="false" CanUserResizeColumns="false">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Address" Binding="{Binding Path=address}" IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding Path=enabled}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!--
+        <chart:PieChart x:Name="ctReportGauge" ChartTitle="CTR" ChartSubTitle="" ChartTitleVisibility="Collapsed" Background="Transparent">
+            <chart:PieChart.Series>
+                <chart:ChartSeries SeriesTitle="CTR" DisplayMember="group" ValueMember="count" ItemsSource="{Binding Path=ctReportRecords}" />
+            </chart:PieChart.Series>
+        </chart:PieChart>
+        -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20">
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Image x:Name="image" Height="100" Width="200" Source="https://cdn3.iconfinder.com/data/icons/hardware-1/100/server_rack-128.png"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Content="ID: "/>
+                <TextBox Text="{Binding Path=server.id}" Width="200" IsEnabled="False" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Content="Date Created: " />
+                <TextBox Text="{Binding Path=server.dateCreated}" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Content="Name: " />
+                <TextBox Text="{Binding Path=server.name}" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Content="Address: " />
+                <TextBox Text="{Binding Path=server.address}" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Content="Username: " />
+                <TextBox Text="{Binding Path=server.username}" Width="200"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Content="Password: " />
+                <TextBox Text="{Binding Path=server.password}" Width="200" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <mahapps:ToggleSwitch x:Name="enableSwitch" IsChecked="{Binding Path=server.enabled}" OnLabel="Enabled" OffLabel="Disabled" />
+            </StackPanel>
+            <StackPanel Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="detectHostsButton" Content="Detect Hosts" Style="{DynamicResource AccentedSquareButtonStyle}" Background="Green" Click="detectHostsButton_Click"/>
+                <Button x:Name="updateButton" Content="Update" Style="{DynamicResource AccentedSquareButtonStyle}" Click="updateButton_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

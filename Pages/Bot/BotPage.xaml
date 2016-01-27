@@ -1,0 +1,79 @@
+﻿<Page x:Class="CampaignReactor.Pages.Bot.BotPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:CampaignReactor.Pages.Bot" xmlns:controls="clr-namespace:CampaignReactor.Controls.Bot"
+      xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="Subscriber Page" DataContext="{Binding RelativeSource={RelativeSource self}}">
+
+    <StackPanel Orientation="Vertical">
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <TextBox x:Name="searchTextBox" VerticalContentAlignment="Center" mahapps:TextBoxHelper.Watermark="By name, keywords, etc..." mahapps:TextBoxHelper.ClearTextButton="True" Text="" Width="200" Height="25" KeyDown="searchTextBox_KeyDown" />
+            <Button x:Name="refreshButton" Width="35" Height="35" Style="{DynamicResource MetroCircleButtonStyle}" Click="searchButton_Click" Background="{DynamicResource AccentColorBrush}" >
+                <Rectangle Width="15" Height="15" Fill="{DynamicResource BlackBrush}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_refresh}"/>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </StackPanel>
+
+        <DataGrid x:Name="listView" ItemsSource="{Binding bots}" SelectionMode="Single" RowHeight="50" HorizontalAlignment="Left" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="false" CanUserResizeRows="False" CanUserSortColumns="false" CanUserResizeColumns="false" SelectionChanged="listView_SelectionChanged" Style="{StaticResource AzureDataGrid}">
+            <DataGrid.ContextMenu >
+                <ContextMenu x:Name="contextMenu">
+                    <MenuItem x:Name="createMenuItem" Header="Create" Click="createMenuItem_Click" />
+                    <MenuItem x:Name="editMenuItem" Header="Edit" Click="editMenuItem_Click"/>
+                    <MenuItem x:Name="disableMenuItem" Header="Disable" Click="disableMenuItem_Click"/>
+                    <MenuItem x:Name="harvestMenuItem" Header="Harvest" Click="harvestMenuItem_Click" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding fullName}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding enabled}" Value="False">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Email" Binding="{Binding emailAddress}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Phone" Binding="{Binding phoneNumber}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Subscribers" Binding="{Binding numberOfSubscribers}" IsReadOnly="True" />
+
+                <!--
+                <DataGridTemplateColumn Header="Enabled" Width="SizeToCells" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <mahapps:ToggleSwitch OnLabel="Yes" OffLabel="No" IsChecked="{Binding Path=enabled}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                -->
+                <!--
+                <DataGridTextColumn Header="URL" Binding="{Binding Path=url}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Unsubscribe URL" Binding="{Binding Path=unsubscribeUrl}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Audio URL" Binding="{Binding Path=audioUrl}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Created" Binding="{Binding Path=dateCreated}" IsReadOnly="True"/>
+                
+                -->
+                <!--
+                <DataGridTemplateColumn Header="Options" Width="SizeToCells" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Controls:ToggleSwitch OnLabel="Yes" OffLabel="No" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                -->
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</Page>

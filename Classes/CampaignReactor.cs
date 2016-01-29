@@ -1,11 +1,9 @@
 ﻿using libCampaignReactor.Models;
 using Newtonsoft.Json;
-using RestSharp;
-using RestSharp.Portable;
-using RestSharp.Portable.HttpClient;
 using System;
 using System.Collections.Generic;
-
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CampaignReactorClient.Classes {
     public class CampaignReactor {
@@ -25,22 +23,27 @@ namespace CampaignReactorClient.Classes {
         }
         */
 
+            /*
         public void initHeaders(RestRequest request) {
             // easily add HTTP Headers
             //request.AddHeader("header", "value");
             //request.RequestFormat = RestSharp.DataFormat.Json;
         }
+        */
 
-        public Uri getAPIUri() {
-            return new Uri($"http://localhost:3579");
+        public string getAPIUri() {
+            return $"http://192.168.1.146:3579";
+            //return new Uri($"http://localhost:3579");
+
         }
 
+        /*
         public Campaign getCampaignById(int id) {
             Campaign campaign = new Campaign();
             RestClient client = new RestClient(this.getAPIUri());
             
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"campaign/{id}", Method.GET);
+            RestRequest request = new RestRequest($"campaign/{id}", HttpMethod.Get);
             this.initHeaders(request);
             //request.AddParameter("id", id); // adds to POST or URL querystring based on Method
 
@@ -61,13 +64,23 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("campaign", Method.GET);
+            RestRequest request = new RestRequest("campaign", HttpHttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
-            IRestResponse response = client.Execute(request).Result;
 
-            return JsonConvert.DeserializeObject<List<Campaign>>(CampaignReactor.getResponse(response.RawBytes));
+            client.ExecuteAsync(request, response => {
+                return JsonConvert.DeserializeObject<List<Campaign>>(response.Content);
+            });
+
+            var task = client.ExecuteAsync(request, response => {
+                JsonConvert.DeserializeObject<List<Campaign>>(response.Content);
+            }).WebRequest;
+
+            task.WebRequest.wait();
+
+            return task.Result;
+
         }
 
         public List<Campaign> getCampaignsByName(string name) {
@@ -75,7 +88,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"campaign/name/{name}", Method.GET);
+            RestRequest request = new RestRequest($"campaign/name/{name}", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -83,27 +96,55 @@ namespace CampaignReactorClient.Classes {
 
             return JsonConvert.DeserializeObject<List<Campaign>>(CampaignReactor.getResponse(response.RawBytes));
         }
-
+        */
         public List<Campaign> getEnabledCampaigns() {
             List<Campaign> campaigns = new List<Campaign>();
-            RestClient client = new RestClient(this.getAPIUri());
 
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("campaign/enabled", Method.GET);
-            this.initHeaders(request);
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/campaign/enabled");
+            campaigns = JsonConvert.DeserializeObject<List<Campaign>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
 
-            // execute the request
-            IRestResponse response = client.Execute(request).Result;
+            return campaigns;
+             
 
-            return JsonConvert.DeserializeObject<List<Campaign>>(CampaignReactor.getResponse(response.RawBytes));
+            /*
+            EveClient client = new EveClient();
+            client.BaseAddress = this.getAPIUri();
+            client.ResourceName = "campaign/enabled";
+            campaigns = client.GetAsync<Campaign>().Result;
+            foreach (Campaign campaign in campaigns) {
+                System.Diagnostics.Debug.WriteLine($"Campaign | Name : {campaign.name}");
+            }
+            return campaigns;
+            */
+
         }
 
+        public HttpResponseMessage httpPost(string url, string data) {
+            HttpClient client = new HttpClient();
+            return client.PostAsync(url, new StringContent(data)).Result;
+        }
+
+        public HttpResponseMessage httpGet(string url) {
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = null;
+            try{
+                response = client.GetAsync(url).Result;
+            }
+            catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}");
+            }
+            return response;
+        }
+
+ 
+
+        /*
         public List<Server> getEnabledServers() {
             //List<Server> servers = new List<Server>();
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("server/enabled", Method.GET);
+            RestRequest request = new RestRequest("server/enabled", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -117,7 +158,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("host/enabled", Method.GET);
+            RestRequest request = new RestRequest("host/enabled", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -131,7 +172,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bot/enabled", Method.GET);
+            RestRequest request = new RestRequest("bot/enabled", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -145,7 +186,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bitly_account/enabled", Method.GET);
+            RestRequest request = new RestRequest("bitly_account/enabled", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -159,7 +200,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bot/available", Method.GET);
+            RestRequest request = new RestRequest("bot/available", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -173,7 +214,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("subscriber/enabled", Method.GET);
+            RestRequest request = new RestRequest("subscriber/enabled", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -186,7 +227,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("campaign/update", Method.POST);
+            RestRequest request = new RestRequest("campaign/update", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(campaign);
 
@@ -199,7 +240,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("server/update", Method.POST);
+            RestRequest request = new RestRequest("server/update", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(server);
 
@@ -212,7 +253,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bot/update", Method.POST);
+            RestRequest request = new RestRequest("bot/update", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(bot);
 
@@ -225,7 +266,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bitly_account/update", Method.POST);
+            RestRequest request = new RestRequest("bitly_account/update", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(bitlyAccount);
 
@@ -238,7 +279,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("subscriber/update", Method.POST);
+            RestRequest request = new RestRequest("subscriber/update", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(subscriber);
 
@@ -251,7 +292,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("subscriber/unsubscribe", Method.POST);
+            RestRequest request = new RestRequest("subscriber/unsubscribe", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(subscriber);
 
@@ -264,7 +305,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("campaign/create", Method.POST);
+            RestRequest request = new RestRequest("campaign/create", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(campaign);
 
@@ -277,7 +318,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("server/create", Method.POST);
+            RestRequest request = new RestRequest("server/create", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(server);
 
@@ -290,7 +331,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bot/create", Method.POST);
+            RestRequest request = new RestRequest("bot/create", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(bot);
 
@@ -303,7 +344,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bitly_account/create", Method.POST);
+            RestRequest request = new RestRequest("bitly_account/create", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(bitlyAccount);
 
@@ -316,7 +357,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("subscriber/create", Method.POST);
+            RestRequest request = new RestRequest("subscriber/create", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(subscriber);
 
@@ -329,7 +370,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("host/create", Method.POST);
+            RestRequest request = new RestRequest("host/create", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(host);
 
@@ -343,7 +384,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"bot/{id}", Method.GET);
+            RestRequest request = new RestRequest($"bot/{id}", HttpMethod.Get);
             this.initHeaders(request);
             //request.AddParameter("id", id); // adds to POST or URL querystring based on Method
 
@@ -360,7 +401,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"bitly_account/{id}", Method.GET);
+            RestRequest request = new RestRequest($"bitly_account/{id}", HttpMethod.Get);
             this.initHeaders(request);
             //request.AddParameter("id", id); // adds to POST or URL querystring based on Method
 
@@ -377,7 +418,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bitly_account/next", Method.GET);
+            RestRequest request = new RestRequest("bitly_account/next", HttpMethod.Get);
             this.initHeaders(request);
             //request.AddParameter("id", id); // adds to POST or URL querystring based on Method
 
@@ -394,7 +435,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("host/next", Method.GET);
+            RestRequest request = new RestRequest("host/next", HttpMethod.Get);
             this.initHeaders(request);
             //request.AddParameter("id", id); // adds to POST or URL querystring based on Method
 
@@ -411,7 +452,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bot", Method.GET);
+            RestRequest request = new RestRequest("bot", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -425,7 +466,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bitly_account", Method.GET);
+            RestRequest request = new RestRequest("bitly_account", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -439,7 +480,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"subscriber/{id}", Method.GET);
+            RestRequest request = new RestRequest($"subscriber/{id}", HttpMethod.Get);
             this.initHeaders(request);
 
 
@@ -454,7 +495,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"server/{id}", Method.GET);
+            RestRequest request = new RestRequest($"server/{id}", HttpMethod.Get);
             this.initHeaders(request);
 
 
@@ -469,7 +510,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"host/{id}", Method.GET);
+            RestRequest request = new RestRequest($"host/{id}", HttpMethod.Get);
             this.initHeaders(request);
             //request.AddParameter("id", id); // adds to POST or URL querystring based on Method
 
@@ -485,7 +526,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("server", Method.GET);
+            RestRequest request = new RestRequest("server", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -498,7 +539,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("subscriber", Method.GET);
+            RestRequest request = new RestRequest("subscriber", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -512,7 +553,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"subscriber/bot/{id}", Method.GET);
+            RestRequest request = new RestRequest($"subscriber/bot/{id}", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -525,7 +566,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"subscriber/send_queue", Method.GET);
+            RestRequest request = new RestRequest($"subscriber/send_queue", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -538,7 +579,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"subscriber/send_queue/{id}", Method.GET);
+            RestRequest request = new RestRequest($"subscriber/send_queue/{id}", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -551,7 +592,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"event_log/subscriber/{id}", Method.GET);
+            RestRequest request = new RestRequest($"event_log/subscriber/{id}", HttpMethod.Get);
             this.initHeaders(request);
 
             // execute the request
@@ -563,7 +604,7 @@ namespace CampaignReactorClient.Classes {
             RestClient client = new RestClient(this.getAPIUri());
 
             // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("bot/sent", Method.POST);
+            RestRequest request = new RestRequest("bot/sent", HttpMethod.Post);
             this.initHeaders(request);
             request.AddBody(bot);
 
@@ -572,6 +613,6 @@ namespace CampaignReactorClient.Classes {
             return JsonConvert.DeserializeObject<int>(CampaignReactor.getResponse(response.RawBytes));
         }
 
-
+        */
     }
 }

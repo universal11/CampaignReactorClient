@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using libCampaignReactor.Models;
+using CampaignReactorClient.Classes;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -23,7 +24,7 @@ namespace CampaignReactorClient{
     /// </summary>
     public sealed partial class MainPage : Page{
 
-        public CampaignReactorClient client = new CampaignReactorClient();
+        public CampaignReactor client = new CampaignReactor();
 
         public MainPage(){
             this.InitializeComponent();

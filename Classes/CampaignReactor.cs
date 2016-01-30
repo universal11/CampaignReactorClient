@@ -101,8 +101,9 @@ namespace CampaignReactorClient.Classes {
             List<Campaign> campaigns = new List<Campaign>();
 
             HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/campaign/enabled");
-            campaigns = JsonConvert.DeserializeObject<List<Campaign>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
-
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                campaigns = JsonConvert.DeserializeObject<List<Campaign>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
             return campaigns;
              
 
@@ -138,21 +139,18 @@ namespace CampaignReactorClient.Classes {
 
  
 
-        /*
+        
         public List<Server> getEnabledServers() {
-            //List<Server> servers = new List<Server>();
-            RestClient client = new RestClient(this.getAPIUri());
+            List<Server> servers = new List<Server>();
 
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("server/enabled", HttpMethod.Get);
-            this.initHeaders(request);
-
-            // execute the request
-            IRestResponse response = client.Execute(request).Result;
-
-            return JsonConvert.DeserializeObject<List<Server>>(CampaignReactor.getResponse(response.RawBytes));
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/server/enabled");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                servers = JsonConvert.DeserializeObject<List<Server>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return servers;
         }
 
+        /*
         public List<Host> getEnabledHosts() {
             //List<Server> servers = new List<Server>();
             RestClient client = new RestClient(this.getAPIUri());
@@ -208,21 +206,19 @@ namespace CampaignReactorClient.Classes {
 
             return JsonConvert.DeserializeObject<List<Bot>>(CampaignReactor.getResponse(response.RawBytes));
         }
-
+        */
         public List<Subscriber> getEnabledSubscribers() {
+
             List<Subscriber> subscribers = new List<Subscriber>();
-            RestClient client = new RestClient(this.getAPIUri());
 
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("subscriber/enabled", HttpMethod.Get);
-            this.initHeaders(request);
-
-            // execute the request
-            IRestResponse response = client.Execute(request).Result;
-
-            return JsonConvert.DeserializeObject<List<Subscriber>>(CampaignReactor.getResponse(response.RawBytes));
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/subscriber/enabled");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                subscribers = JsonConvert.DeserializeObject<List<Subscriber>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return subscribers;
         }
 
+        /*
         public int updateCampaign(Campaign campaign) {
             RestClient client = new RestClient(this.getAPIUri());
 

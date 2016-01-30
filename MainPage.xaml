@@ -1,18 +1,15 @@
 ﻿<Page
     x:Class="CampaignReactorClient.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CampaignReactorClient" xmlns:models="using:libCampaignReactor.Models" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" >
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:CampaignReactorClient" xmlns:models="using:libCampaignReactor.Models" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" DataContext="{Binding RelativeSource={RelativeSource self}}">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DataContext="{Binding RelativeSource={RelativeSource self}}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 
+        <ProgressRing x:Name="progressRing" Width="100" Height="100" />
 
 
-
-        <SplitView x:Name="splitView" DisplayMode="Overlay" IsPaneOpen="True" VerticalContentAlignment="Stretch" >
+        <SplitView x:Name="splitView" DisplayMode="Overlay" >
             <SplitView.Pane>
                 <StackPanel>
                     <Button Width="50" Height="50" Background="Green"></Button>
@@ -22,23 +19,78 @@
             </SplitView.Pane>
             <SplitView.Content>
                 <Grid>
-                    <Pivot x:Name="navPivot" SelectionChanged="navPivot_SelectionChanged" VerticalAlignment="Stretch">
+                    <Pivot x:Name="navPivot" SelectionChanged="navPivot_SelectionChanged" >
 
                         <PivotItem x:Name="dashboardPivotItem" Header="Dashboard" TabIndex="0">Dashboard</PivotItem>
                         <PivotItem x:Name="campaignPivotItem" Header="Campaigns" TabIndex="1">
-                            <ListView x:Name="campaignListView" ItemsSource="{x:Bind campaigns}">
-  
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:Campaign">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Path=name}"></TextBlock>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
+                            <Pivot>
+                                <PivotItem Header="List">
+                                    <ListView x:Name="campaignListView" ItemsSource="{x:Bind campaigns}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Height="50" Width="50" Source="{Binding Path=imageUrl}" />
+                                                    <TextBlock VerticalAlignment="Center" Text="{Binding Path=name}" Margin="10,0,0,0"></TextBlock>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </PivotItem>
+                                <PivotItem Header="+">
+                                    New
+                                </PivotItem>
+                            </Pivot>
+                            
                         </PivotItem>
-                        <PivotItem x:Name="serverPivotItem" Header="Servers" TabIndex="2">Server</PivotItem>
-                        <PivotItem x:Name="subscriberPivotItem" Header="Subscribers" TabIndex="3">Subscriber</PivotItem>
+                        <PivotItem x:Name="serverPivotItem" Header="Servers" TabIndex="2">
+                            <Pivot>
+                                <PivotItem Header="List">
+                                    <ListView x:Name="serverListView" ItemsSource="{x:Bind servers}">
+
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Height="50" Width="50" Source="https://cdn0.iconfinder.com/data/icons/seo-smart-pack/128/grey_new_seo2-06-512.png" />
+                                                    <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                                                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=address}" />
+                                                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=name }" />
+                                                    </StackPanel>
+
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </PivotItem>
+                                <PivotItem Header="+">
+                                    New
+                                </PivotItem>
+                            </Pivot>
+                            
+                        </PivotItem>
+                        <PivotItem x:Name="subscriberPivotItem" Header="Subscribers" TabIndex="3">
+                            <Pivot>
+                                <PivotItem Header="List">
+                                    <ListView x:Name="subscriberListView" ItemsSource="{x:Bind subscribers}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Height="50" Width="50" Source="http://help.campaignmonitor.com/img/help/RSS-feed-icon.png" />
+                                                    <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                                                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=emailAddress}" />
+                                                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=fullName }" />
+                                                    </StackPanel>
+                                                </StackPanel>
+
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </PivotItem>
+                                <PivotItem Header="+">
+                                    New
+                                </PivotItem>
+                            </Pivot>
+                            
+                        </PivotItem>
                         <PivotItem x:Name="botPivotItem" Header="Bot" TabIndex="4">Bot</PivotItem>
                         <PivotItem x:Name="bitlyAccountPivotItem" Header="Bitly Account" TabIndex="5">Bitly Account</PivotItem>
                     </Pivot>

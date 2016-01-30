@@ -29,6 +29,8 @@ namespace CampaignReactorClient{
         //public ObservableCollection<dynamic> items { get; set; } = new ObservableCollection<dynamic>();
         public CampaignReactor client = new CampaignReactor();
         public ObservableCollection<Campaign> campaigns { get; set; } = new ObservableCollection<Campaign>();
+        public ObservableCollection<Server> servers { get; set; } = new ObservableCollection<Server>();
+        public ObservableCollection<Subscriber> subscribers { get; set; } = new ObservableCollection<Subscriber>();
 
         public MainPage() {
             this.InitializeComponent();
@@ -36,29 +38,37 @@ namespace CampaignReactorClient{
 
         private void navPivot_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             Pivot pivot = (Pivot)sender;
+            this.showProgressRing();
 
             if (pivot.SelectedIndex.Equals(dashboardPivotItem.TabIndex)) {
-                //this.listView.Items.Clear();
+
             }
             else if (pivot.SelectedIndex.Equals(campaignPivotItem.TabIndex)) {
                 this.campaigns.Clear();
                 foreach (Campaign campaign in this.client.getEnabledCampaigns()) {
                     this.campaigns.Add(campaign);
                 }
-
             }
             else if (pivot.SelectedIndex.Equals(serverPivotItem.TabIndex)) {
-                //this.listView.Items.Clear();
+                this.servers.Clear();
+                foreach (Server server in this.client.getEnabledServers()) {
+                    this.servers.Add(server);
+                }
+
             }
             else if (pivot.SelectedIndex.Equals(subscriberPivotItem.TabIndex)) {
-                //this.listView.Items.Clear();
+                this.subscribers.Clear();
+                foreach (Subscriber subscriber in this.client.getEnabledSubscribers()) {
+                    this.subscribers.Add(subscriber);
+                }
             }
             else if (pivot.SelectedIndex.Equals(botPivotItem.TabIndex)) {
-                //this.listView.Items.Clear();
+
             }
             else if (pivot.SelectedIndex.Equals(bitlyAccountPivotItem.TabIndex)) {
-                //this.listView.Items.Clear();
+
             }
+            this.hideProgressRing();
         }
 
         private void showDialogue(string message) {
@@ -75,10 +85,42 @@ namespace CampaignReactorClient{
             messageDialog.ShowAsync();
         }
 
+        public void showProgressRing() {
+            this.splitView.IsPaneOpen = true;
+        }
+
+        public void hideProgressRing() {
+            this.splitView.IsPaneOpen = false;
+        }
+
+        public void showPane() {
+            this.splitView.IsPaneOpen = true;
+        }
+
+        public void hidePane() {
+            this.splitView.IsPaneOpen = false;
+        }
+
         private void togglePaneButton_Click(object sender, RoutedEventArgs e) {
             this.splitView.IsPaneOpen = true;
         }
-    }
 
+        private void campaignListView_Tapped(object sender, TappedRoutedEventArgs e) {
+            this.showPane();
+        }
+
+        private void serverListView_Tapped(object sender, TappedRoutedEventArgs e) {
+            this.showPane();
+        }
+
+        private void subscriberListView_Tapped(object sender, TappedRoutedEventArgs e) {
+            this.showPane();
+        }
+
+        private void subscriberListItemButton_Click(object sender, RoutedEventArgs e) {
+
+            this.showDialogue($"Selected Email Address: {((Subscriber)this.subscriberListView.SelectedItem).emailAddress}");
+        }
+    }
 
 }

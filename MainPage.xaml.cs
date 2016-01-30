@@ -14,10 +14,10 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using libCampaignReactor.Models;
-using CampaignReactorClient.Classes;
 using Windows.UI.Input;
 using System.Collections.ObjectModel;
 using Windows.UI.Popups;
+using CampaignReactorClient.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,13 +27,28 @@ namespace CampaignReactorClient{
     /// </summary>
     public sealed partial class MainPage : Page {
         //public ObservableCollection<dynamic> items { get; set; } = new ObservableCollection<dynamic>();
-        public CampaignReactor client = new CampaignReactor();
-        public ObservableCollection<Campaign> campaigns { get; set; } = new ObservableCollection<Campaign>();
-        public ObservableCollection<Server> servers { get; set; } = new ObservableCollection<Server>();
-        public ObservableCollection<Subscriber> subscribers { get; set; } = new ObservableCollection<Subscriber>();
+        public CampaignReactorClient client = new CampaignReactorClient();
+        
+        
+        
 
         public MainPage() {
             this.InitializeComponent();
+            this.init();
+        }
+
+        private void init() {
+            this.initCampaignControl();
+        }
+
+        private void initCampaignControl() {
+            this.campaignControl.AddButtonClick += addCampaign;
+        }
+
+        private void addCampaign(object sender, RoutedEventArgs e) {
+            this.client.createCampaign(this.campaignControl.campaign);
+            this.campaignControl.campaign = new Campaign();
+            this.showDialogue("Campaign Created!");
         }
 
         private void navPivot_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -44,23 +59,14 @@ namespace CampaignReactorClient{
 
             }
             else if (pivot.SelectedIndex.Equals(campaignPivotItem.TabIndex)) {
-                this.campaigns.Clear();
-                foreach (Campaign campaign in this.client.getEnabledCampaigns()) {
-                    this.campaigns.Add(campaign);
-                }
+                this.campaignControl.loadCampaigns(this.client.getEnabledCampaigns());
             }
             else if (pivot.SelectedIndex.Equals(serverPivotItem.TabIndex)) {
-                this.servers.Clear();
-                foreach (Server server in this.client.getEnabledServers()) {
-                    this.servers.Add(server);
-                }
+                this.serverControl.loadServers(this.client.getEnabledServers());
 
             }
             else if (pivot.SelectedIndex.Equals(subscriberPivotItem.TabIndex)) {
-                this.subscribers.Clear();
-                foreach (Subscriber subscriber in this.client.getEnabledSubscribers()) {
-                    this.subscribers.Add(subscriber);
-                }
+                this.subscriberControl.loadSubscribers(this.client.getEnabledSubscribers());
             }
             else if (pivot.SelectedIndex.Equals(botPivotItem.TabIndex)) {
 
@@ -105,22 +111,8 @@ namespace CampaignReactorClient{
             this.splitView.IsPaneOpen = true;
         }
 
-        private void campaignListView_Tapped(object sender, TappedRoutedEventArgs e) {
-            this.showPane();
-        }
 
-        private void serverListView_Tapped(object sender, TappedRoutedEventArgs e) {
-            this.showPane();
-        }
 
-        private void subscriberListView_Tapped(object sender, TappedRoutedEventArgs e) {
-            this.showPane();
-        }
-
-        private void subscriberListItemButton_Click(object sender, RoutedEventArgs e) {
-
-            this.showDialogue($"Selected Email Address: {((Subscriber)this.subscriberListView.SelectedItem).emailAddress}");
-        }
     }
 
 }

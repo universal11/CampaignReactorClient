@@ -1,0 +1,115 @@
+﻿<UserControl
+    x:Class="CampaignReactorClient.Controls.CampaignControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CampaignReactorClient.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400" DataContext="{Binding RelativeSource={RelativeSource self}}">
+
+    <Grid>
+        <Pivot x:Name="pivot" SelectionChanged="Pivot_SelectionChanged">
+
+            <PivotItem x:Name="browsePivotItem" Header="Browse" TabIndex="0">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+
+                    </Grid.RowDefinitions>
+                    <TextBox Text="" Grid.Row="0" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                        <ListView x:Name="listView" ItemsSource="{x:Bind campaigns}" SelectionChanged="listView_SelectionChanged">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Height="50" Width="50" Source="{Binding Path=imageUrl}" />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=name}" Margin="10,0,0,0"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+                    
+                    
+                </Grid>
+            </PivotItem>
+            <PivotItem x:Name="viewPivotItem" Header="View" TabIndex="1" >
+                <ScrollViewer HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical" >
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="image" Height="50" Width="100" Source="{Binding Path=selectedCampaign.imageUrl, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="ID" Text="{Binding Path=selectedCampaign.id, Mode=TwoWay}" Width="200" IsEnabled="False" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Date Created" Text="{Binding Path=selectedCampaign.dateCreated, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Name" Text="{Binding Path=selectedCampaign.name, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Subject" Text="{Binding Path=selectedCampaign.subject, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="URL" Text="{Binding Path=selectedCampaign.url, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Image URL" Text="{Binding Path=selectedCampaign.imageUrl, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Unsubscribe URL" Text="{Binding Path=selectedCampaign.unsubscribeUrl, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Unsubscribe Image URL" Text="{Binding Path=selectedCampaign.unsubscribeImageUrl, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Number Of Clicks" Text="{Binding Path=selectedCampaign.numberOfClicks, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Number Of Opens" Width="200" Text="{Binding Path=selectedCampaign.numberOfOpens, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleSwitch x:Name="enableSwitch" Header="Enabled" IsOn="{Binding Path=selectedCampaign.enabled, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <Button x:Name="updateButton" Content="Update" Click="updateButton_Click" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+            <PivotItem x:Name="addPivotItem" Header="Add" TabIndex="2">
+                <ScrollViewer HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Name" Text="{Binding Path=newCampaign.name, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Subject" Text="{Binding Path=newCampaign.subject, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="URL" Text="{Binding Path=newCampaign.url, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Image URL" Text="{Binding Path=newCampaign.imageUrl, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Unsubscribe URL" Text="{Binding Path=newCampaign.unsubscribeUrl, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Unsubscribe Image URL" Text="{Binding Path=newCampaign.unsubscribeImageUrl, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <Button x:Name="addButton" Content="Add" Background="#548E19" Click="addButton_Click">
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+        </Pivot>
+    </Grid>
+</UserControl>

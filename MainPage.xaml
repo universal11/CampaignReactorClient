@@ -1,14 +1,48 @@
 ﻿<Page
     x:Class="CampaignReactorClient.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CampaignReactorClient"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:CampaignReactorClient" xmlns:models="using:libCampaignReactor.Models" xmlns:controls="using:CampaignReactorClient.Controls"  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" DataContext="{Binding RelativeSource={RelativeSource self}}" x:Name="mainPage">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBox Text="This is just a test!" Width="100" Height="25" />
-        
+
+
+        <ProgressRing x:Name="progressRing" Width="100" Height="100" />
+
+
+        <SplitView x:Name="splitView" DisplayMode="Overlay" >
+            <SplitView.Pane>
+                <StackPanel>
+                    <Button Width="50" Height="50" Background="Green"></Button>
+                    <Button Width="50" Height="50" Background="Blue"></Button>
+                    <Button Width="50" Height="50" Background="Red"></Button>
+                </StackPanel>
+            </SplitView.Pane>
+            <SplitView.Content>
+                <Grid>
+                    <Pivot x:Name="navPivot" SelectionChanged="navPivot_SelectionChanged" >
+
+                        <PivotItem x:Name="dashboardPivotItem" Header="Dashboard" TabIndex="0">Dashboard</PivotItem>
+                        <PivotItem x:Name="campaignPivotItem" Header="Campaigns" TabIndex="1">
+                            <controls:CampaignControl x:Name="campaignControl" client="{x:Bind client}"/>
+                        </PivotItem>
+                        <PivotItem x:Name="serverPivotItem" Header="Servers" TabIndex="2">
+                            <controls:ServerControl x:Name="serverControl" />
+                        </PivotItem>
+                        <PivotItem x:Name="subscriberPivotItem" Header="Subscribers" TabIndex="3">
+                            <controls:SubscriberControl x:Name="subscriberControl" />
+                        </PivotItem>
+                        <PivotItem x:Name="botPivotItem" Header="Bot" TabIndex="4">Bot
+                        
+                        </PivotItem>
+                        <PivotItem x:Name="bitlyAccountPivotItem" Header="Bitly Account" TabIndex="5">Bitly Account</PivotItem>
+                    </Pivot>
+                    <!--
+                    <Button x:Name="togglePaneButton" Width="200" Height="50" Click="togglePaneButton_Click" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></Button>
+                    -->
+                </Grid>
+                
+            </SplitView.Content>
+        </SplitView>
+
     </Grid>
 </Page>

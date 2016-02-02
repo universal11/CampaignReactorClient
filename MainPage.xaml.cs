@@ -14,6 +14,10 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using libCampaignReactor.Models;
+using Windows.UI.Input;
+using System.Collections.ObjectModel;
+using Windows.UI.Popups;
+using CampaignReactorClient.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -21,153 +25,90 @@ namespace CampaignReactorClient{
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page{
+    public sealed partial class MainPage : Page {
+        //public ObservableCollection<dynamic> items { get; set; } = new ObservableCollection<dynamic>();
+        public CampaignReactorClient client { get; set; } = new CampaignReactorClient();
+        
+        
+        
 
         public MainPage() {
             this.InitializeComponent();
+            this.init();
         }
 
-
-        /*
-        public CampaignReactorClient client = new CampaignReactorClient();
-        public Timer refreshTimer = new Timer(10000);
-
-        public MainPage(){
-            this.InitializeComponent();
-            //this.client.init("campaignreactor.com", 3579);
-            Subscriber subscriber = client.getSubscriberById(1);
-            this.refreshTimer.Elapsed += new ElapsedEventHandler(refreshPage);
+        private void init() {
+            this.initCampaignControl();
         }
 
-        public void showDashboardView() {
-            System.Console.WriteLine("Showing Dashboard!");
-            this.dashboardView.Children.Clear();
-            //this.dashboardView.Children.Add(new CampaignControl(client.getCurrentCampaign()));
+        private void initCampaignControl() {
+            //this.campaignControl.AddButtonClick += addCampaign;
+            //this.campaignControl.UpdateButtonClick += updateCampaign;
         }
 
+        
+        private void navPivot_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            Pivot pivot = (Pivot)sender;
+            this.showProgressRing();
 
-
-        public static Image getImage(string path) {
-            System.Console.WriteLine("Loading Image: " + path);
-            Image image = new Image();
-            image.Source = new BitmapImage(new Uri(path, UriKind.Absolute));
-            return image;
-        }
-
-
-        private void loadPage() {
-            this.searchFlyout.IsOpen = false;
-            if (this.navTabControl.SelectedIndex.Equals(dashboardTabItem.TabIndex)) {
-                this.showDashboardView();
-            }
-            else if (this.navTabControl.SelectedIndex.Equals(campaignTabItem.TabIndex)) {
-                Pages.Campaign.CampaignPage page = new Pages.Campaign.CampaignPage();
-                page.getEnabledCampaigns();
-                this.campaignView.Navigate(page);
-            }
-            else if (this.navTabControl.SelectedIndex.Equals(serverTabItem.TabIndex)) {
-                Pages.Server.ServerPage page = new Pages.Server.ServerPage();
-                page.getEnabledServers();
-                this.serverView.Navigate(page);
-            }
-            else if (this.navTabControl.SelectedIndex.Equals(subscriberTabItem.TabIndex)) {
-                Pages.Subscriber.SubscriberPage page = new Pages.Subscriber.SubscriberPage();
-                page.getEnabledSubscribers();
-                this.subscriberView.Navigate(page);
-            }
-            else if (this.navTabControl.SelectedIndex.Equals(botTabItem.TabIndex)) {
-                Pages.Bot.BotPage page = new Pages.Bot.BotPage();
-                page.getEnabledBots();
-                this.botView.Navigate(page);
-
+            if (pivot.SelectedIndex.Equals(dashboardPivotItem.TabIndex)) {
 
             }
-            else if (this.navTabControl.SelectedIndex.Equals(bitlyAccountTabItem.TabIndex)) {
-                Pages.BitlyAccount.BitlyAccountPage page = new Pages.BitlyAccount.BitlyAccountPage();
-                page.getEnabledBitlyAccounts();
-                this.bitlyAccountView.Navigate(page);
-
-       
+            else if (pivot.SelectedIndex.Equals(campaignPivotItem.TabIndex)) {
+                this.campaignControl.loadEnabledCampaigns();
+                
             }
+            else if (pivot.SelectedIndex.Equals(serverPivotItem.TabIndex)) {
+                this.serverControl.loadServers(this.client.getEnabledServers());
 
-            //this.startRefreshMonitor();
-        }
-
-        private void navTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (e.Source == this.navTabControl) {
-                this.loadPage();
             }
+            else if (pivot.SelectedIndex.Equals(subscriberPivotItem.TabIndex)) {
+                this.subscriberControl.loadSubscribers(this.client.getEnabledSubscribers());
+            }
+            else if (pivot.SelectedIndex.Equals(botPivotItem.TabIndex)) {
+
+            }
+            else if (pivot.SelectedIndex.Equals(bitlyAccountPivotItem.TabIndex)) {
+
+            }
+            this.hideProgressRing();
         }
 
-
-        private void refreshPage(object sender, ElapsedEventArgs e) {
-            this.Dispatcher.Invoke((Action)(() => {
-                this.loadPage();
-                //this.showDialogue("Update Complete", "Data Successfully Refreshed!");
-            }));
-
+        public static void showConfirmationDialogue(string message) {
+            MessageDialog messageDialog = new MessageDialog(message);
+            messageDialog.Commands.Add(new UICommand("Yes"));
+            messageDialog.Commands.Add(new UICommand("No"));
+            messageDialog.ShowAsync();
         }
 
-        private void startRefreshMonitor() {
-            this.refreshTimer.Enabled = true;
+        public static void showDialogue(string message) {
+            MessageDialog messageDialog = new MessageDialog(message);
+            messageDialog.Commands.Add(new UICommand("Ok"));
+            messageDialog.ShowAsync();
         }
 
-        private void stopRefreshMonitor() {
-            this.refreshTimer.Enabled = false;
+        public void showProgressRing() {
+            this.splitView.IsPaneOpen = true;
         }
 
-        public async void showDialogue(string title, string message) {
-            await this.ShowMessageAsync(title, message);
-
+        public void hideProgressRing() {
+            this.splitView.IsPaneOpen = false;
         }
 
-        private void campaignNavTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-
+        public void showPane() {
+            this.splitView.IsPaneOpen = true;
         }
 
-        private void helpButton_Click(object sender, RoutedEventArgs e) {
-            this.showDialogue("Help", "Help section pending...");
+        public void hidePane() {
+            this.splitView.IsPaneOpen = false;
         }
 
-        private void accountButton_Click(object sender, RoutedEventArgs e) {
-            this.showDialogue("Account", "Account section pending...");
-        }
-
-        private void dashboardTabItem_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-
-        }
-
-        private void campaignTabItem_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            campaignTabItem.IsSelected = true;
-        }
-
-        private void serverTabItem_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            serverTabItem.IsSelected = true;
-        }
-
-        private void botTabItem_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            botTabItem.IsSelected = true;
-        }
-
-        private void dashboardTabItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-
-        }
-
-        private void campaignTabItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            //this.campaignContextMenu.IsOpen = true;
+        private void togglePaneButton_Click(object sender, RoutedEventArgs e) {
+            this.splitView.IsPaneOpen = true;
         }
 
 
 
-        private void subscriberTabItem_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            subscriberTabItem.IsSelected = true;
-        }
-
-        private void bitlyAccountTabItem_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
-            bitlyAccountTabItem.IsSelected = true;
-        }
-        */
     }
-
 
 }

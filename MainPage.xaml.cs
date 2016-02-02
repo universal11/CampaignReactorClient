@@ -27,7 +27,7 @@ namespace CampaignReactorClient{
     /// </summary>
     public sealed partial class MainPage : Page {
         //public ObservableCollection<dynamic> items { get; set; } = new ObservableCollection<dynamic>();
-        public CampaignReactorClient client = new CampaignReactorClient();
+        public CampaignReactorClient client { get; set; } = new CampaignReactorClient();
         
         
         
@@ -42,15 +42,11 @@ namespace CampaignReactorClient{
         }
 
         private void initCampaignControl() {
-            this.campaignControl.AddButtonClick += addCampaign;
+            //this.campaignControl.AddButtonClick += addCampaign;
+            //this.campaignControl.UpdateButtonClick += updateCampaign;
         }
 
-        private void addCampaign(object sender, RoutedEventArgs e) {
-            this.client.createCampaign(this.campaignControl.campaign);
-            this.campaignControl.campaign = new Campaign();
-            this.showDialogue("Campaign Created!");
-        }
-
+        
         private void navPivot_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             Pivot pivot = (Pivot)sender;
             this.showProgressRing();
@@ -59,7 +55,8 @@ namespace CampaignReactorClient{
 
             }
             else if (pivot.SelectedIndex.Equals(campaignPivotItem.TabIndex)) {
-                this.campaignControl.loadCampaigns(this.client.getEnabledCampaigns());
+                this.campaignControl.loadEnabledCampaigns();
+                
             }
             else if (pivot.SelectedIndex.Equals(serverPivotItem.TabIndex)) {
                 this.serverControl.loadServers(this.client.getEnabledServers());
@@ -77,17 +74,16 @@ namespace CampaignReactorClient{
             this.hideProgressRing();
         }
 
-        private void showDialogue(string message) {
-            var messageDialog = new MessageDialog(message);
-
+        public static void showConfirmationDialogue(string message) {
+            MessageDialog messageDialog = new MessageDialog(message);
             messageDialog.Commands.Add(new UICommand("Yes"));
-
             messageDialog.Commands.Add(new UICommand("No"));
+            messageDialog.ShowAsync();
+        }
 
-
-
-            // call the ShowAsync() method to display the message dialog
-
+        public static void showDialogue(string message) {
+            MessageDialog messageDialog = new MessageDialog(message);
+            messageDialog.Commands.Add(new UICommand("Ok"));
             messageDialog.ShowAsync();
         }
 

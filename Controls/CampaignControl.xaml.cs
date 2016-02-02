@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -18,17 +19,62 @@ using Windows.UI.Xaml.Navigation;
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace CampaignReactorClient.Controls {
-    public sealed partial class CampaignControl : UserControl {
+    public partial class CampaignControl : UserControl, INotifyPropertyChanged {
         public ObservableCollection<Campaign> campaigns { get; set; } = new ObservableCollection<Campaign>();
-        public Campaign campaign {get; set;} = new Campaign();
+        public CampaignReactorClient client { get; set; } = null;
 
+        public Campaign _selectedCampaign { get; set; } = null;
+
+        public Campaign selectedCampaign {
+            get {
+                return this._selectedCampaign;
+            }
+            set {
+                this._selectedCampaign = value; NotifyPropertyChanged("selectedCampaign"); ;
+            }
+        }
+        
+
+        private Visibility _viewPivotItemVisibility { get; set; } = Visibility.Collapsed;
+
+        public Visibility viewPivotItemVisibility {
+            get {
+                return this._viewPivotItemVisibility;
+            }
+            set {
+                this._viewPivotItemVisibility = value; NotifyPropertyChanged("viewPivotItemVisibility");
+            }
+        }
+
+        public Campaign _newCampaign { get; set; } = new Campaign();
+        public Campaign newCampaign {
+            get { return _newCampaign; }
+            set { _newCampaign = value;  NotifyPropertyChanged("newCampaign"); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /*
         public event RoutedEventHandler AddButtonClick {
             add { this.addButton.Click += value; }
             remove { this.addButton.Click -= value; }
         }
 
+        public event RoutedEventHandler UpdateButtonClick {
+            add { this.updateButton.Click += value; }
+            remove { this.updateButton.Click -= value; }
+        }
+        */
         public CampaignControl() {
+            this.client = client;
             this.InitializeComponent();
+        }
+
+
+        private void NotifyPropertyChanged(string name) {
+            if (PropertyChanged != null) {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
         }
 
         public void loadCampaigns(List<Campaign> campaigns) {
@@ -38,7 +84,66 @@ namespace CampaignReactorClient.Controls {
             }
         }
 
+       public void loadEnabledCampaigns() {
+            this.loadCampaigns(this.client.getEnabledCampaigns());
+        }
 
+        public void listView_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            Campaign campaign = ((Campaign)((ListView)sender).SelectedItem);
+            if (campaign != null) {
+                this.selectedCampaign = campaign;
+                viewPivotItem.Visibility = Visibility.Visible;
+            }
+            else {
+                viewPivotItem.Visibility = Visibility.Collapsed;
+            }
+            
+        }
+
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            int tabIndex = ( (PivotItem)((Pivot)sender).SelectedItem ).TabIndex;
+
+            if (tabIndex.Equals(browsePivotItem.TabIndex)) {
+                this.loadEnabledCampaigns();
+                if (this.selectedCampaign != null) {
+                    this.selectCampaignById(this.selectedCampaign.id);
+                }
+            }
+            else if (tabIndex.Equals(viewPivotItem.TabIndex)) {
+       
+            }
+            else if (tabIndex.Equals(addPivotItem.TabIndex)) {
+
+            }
+        }
+
+        private void selectCampaignById(int id) {
+
+            for (int i = 0; i < this.listView.Items.Count; i++) {
+                Campaign campaign = (Campaign)this.listView.Items[i];
+                if (campaign.id.Equals(id)) {
+                    this.listView.SelectedIndex = i;
+                }
+            }
+        }
+
+        private void addButton_Click(object sender, RoutedEventArgs e) {
+            Campaign campaign = this.client.getCampaignById(this.client.createCampaign(this.newCampaign));
+            //this.loadEnabledCampaigns();
+            //this.listView.SelectedItem = campaign;
+            //this.selectedCampaign = (Campaign)this.listView.SelectedItem;
+            //;
+            this.newCampaign = new Campaign();
+            MainPage.showDialogue("Campaign Created!");
+            this.pivot.SelectedIndex = browsePivotItem.TabIndex;
+        }
+
+        private void updateButton_Click(object sender, RoutedEventArgs e) {
+            this.client.updateCampaign((Campaign)this.selectedCampaign);
+            //this.selectedCampaign = this.client.getCampaignById(((Campaign)this.selectedCampaign).id);
+            MainPage.showDialogue("Campaign Updated!");
+            this.pivot.SelectedIndex = browsePivotItem.TabIndex;
+        }
     }
 
 }

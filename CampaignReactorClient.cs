@@ -37,23 +37,19 @@ namespace CampaignReactorClient {
 
         }
 
-        /*
+        
         public Campaign getCampaignById(int id) {
+
             Campaign campaign = new Campaign();
-            RestClient client = new RestClient(this.getAPIUri());
-            
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"campaign/{id}", HttpMethod.Get);
-            this.initHeaders(request);
-            //request.AddParameter("id", id); // adds to POST or URL querystring based on Method
 
-            
-
-            // execute the request
-            IRestResponse response = client.Execute(request).Result;
-
-            return JsonConvert.DeserializeObject<Campaign>(CampaignReactor.getResponse(response.RawBytes));
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/campaign/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                campaign = JsonConvert.DeserializeObject<Campaign>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return campaign;
         }
+
+        /*
 
         public static string getResponse(byte[] data) {
             return System.Text.Encoding.UTF8.GetString(data);
@@ -106,18 +102,6 @@ namespace CampaignReactorClient {
             }
             return campaigns;
              
-
-            /*
-            EveClient client = new EveClient();
-            client.BaseAddress = this.getAPIUri();
-            client.ResourceName = "campaign/enabled";
-            campaigns = client.GetAsync<Campaign>().Result;
-            foreach (Campaign campaign in campaigns) {
-                System.Diagnostics.Debug.WriteLine($"Campaign | Name : {campaign.name}");
-            }
-            return campaigns;
-            */
-
         }
 
         public HttpResponseMessage httpPost(string url, string data) {
@@ -218,20 +202,20 @@ namespace CampaignReactorClient {
             return subscribers;
         }
 
-        /*
+        
         public int updateCampaign(Campaign campaign) {
-            RestClient client = new RestClient(this.getAPIUri());
 
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("campaign/update", HttpMethod.Post);
-            this.initHeaders(request);
-            request.AddBody(campaign);
+            int response = 0;
 
-            // execute the request
-            IRestResponse response = client.Execute(request).Result;
-            return JsonConvert.DeserializeObject<int>(CampaignReactor.getResponse(response.RawBytes));
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/campaign/update", JsonConvert.SerializeObject(campaign));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
         }
 
+        /*
         public int updateServer(Server server) {
             RestClient client = new RestClient(this.getAPIUri());
 
@@ -299,7 +283,6 @@ namespace CampaignReactorClient {
         */
         public int createCampaign(Campaign campaign) {
             int response = 0;
-
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/campaign/create", JsonConvert.SerializeObject(campaign));
             if (httpResponseMessage.IsSuccessStatusCode) {
                 response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);

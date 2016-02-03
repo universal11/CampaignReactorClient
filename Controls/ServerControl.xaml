@@ -9,29 +9,97 @@
     d:DesignHeight="300" d:DesignWidth="400" DataContext="{Binding RelativeSource={RelativeSource self}}">
 
     <Grid>
-        <Pivot>
-            <PivotItem Header="Browse">
-                <StackPanel Orientation="Vertical">
-                    <TextBox Text="" />
-                    <ListView ItemsSource="{x:Bind servers}">
+        <Pivot x:Name="pivot" SelectionChanged="Pivot_SelectionChanged">
 
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Height="50" Width="50" Source="https://cdn0.iconfinder.com/data/icons/seo-smart-pack/128/grey_new_seo2-06-512.png" />
-                                    <StackPanel Orientation="Vertical" Margin="10,0,0,0">
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=address}" />
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=name }" />
+            <PivotItem x:Name="browsePivotItem" Header="Browse" TabIndex="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="searchTextBox" Width="auto" Text="" TextChanged="searchTextBox_TextChanged" />
+                    <Button x:Name="searchButton" Content="Search" Grid.Column="1" Click="searchButton_Click" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.ColumnSpan="2">
+                        <ListView x:Name="listView" ItemsSource="{x:Bind servers}" SelectionChanged="listView_SelectionChanged">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Height="50" Width="50" Source="https://cdn0.iconfinder.com/data/icons/seo-smart-pack/128/grey_new_seo2-06-512.png" />
+                                        <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Path=address}" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Path=name }" />
+                                        </StackPanel>
                                     </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
 
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </StackPanel>
+
+                </Grid>
             </PivotItem>
-            <PivotItem Header="Add">
-                New
+            <PivotItem x:Name="viewPivotItem" Header="View" TabIndex="1" Visibility="{x:Bind viewPivotItemVisibility, Mode=TwoWay}">
+                <ScrollViewer HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="image" Height="50" Width="100" Source="https://cdn0.iconfinder.com/data/icons/seo-smart-pack/128/grey_new_seo2-06-512.png" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="ID" Text="{Binding Path=selectedServer.id, Mode=TwoWay}" Width="200" IsEnabled="False" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Date Created" Text="{Binding Path=selectedServer.dateCreated, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Name" Text="{Binding Path=selectedServer.name, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Address" Text="{Binding Path=selectedServer.address, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Username" Text="{Binding Path=selectedServer.username, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Password" Text="{Binding Path=selectedServer.password, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleSwitch x:Name="enableSwitch" Header="Enabled" IsOn="{Binding Path=selectedServer.enabled, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <Button x:Name="updateButton" Content="Update" Click="updateButton_Click" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+            <PivotItem x:Name="addPivotItem" Header="Add" TabIndex="2">
+                <ScrollViewer HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Height="50" Width="100" Source="https://cdn0.iconfinder.com/data/icons/seo-smart-pack/128/grey_new_seo2-06-512.png" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Name" Text="{Binding Path=newServer.name, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Address" Text="{Binding Path=newServer.address, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Username" Text="{Binding Path=newServer.username, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Password" Text="{Binding Path=newServer.password, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <Button x:Name="addButton" Content="Add" Background="#548E19" Click="addButton_Click">
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </PivotItem>
         </Pivot>
     </Grid>

@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:CampaignReactorClient.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400" DataContext="{Binding RelativeSource={RelativeSource self}}">
 
@@ -17,16 +16,20 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
-
                     </Grid.RowDefinitions>
-                    <TextBox Text="" Grid.Row="0" />
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="searchTextBox" Width="auto" Text="" TextChanged="searchTextBox_TextChanged" />
+                    <Button x:Name="searchButton" Content="Search" Grid.Column="1" Click="searchButton_Click"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.ColumnSpan="2">
                         <ListView x:Name="listView" ItemsSource="{x:Bind campaigns}" SelectionChanged="listView_SelectionChanged">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Height="50" Width="50" Source="{Binding Path=imageUrl}" />
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=name}" Margin="10,0,0,0"></TextBlock>
+                                        <TextBlock x:Name="nameTextBlock" VerticalAlignment="Center" Text="{Binding Path=name}" Margin="10,0,0,0"></TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -36,7 +39,7 @@
                     
                 </Grid>
             </PivotItem>
-            <PivotItem x:Name="viewPivotItem" Header="View" TabIndex="1" >
+            <PivotItem x:Name="viewPivotItem" Header="View" TabIndex="1" Visibility="{x:Bind viewPivotItemVisibility, Mode=TwoWay}">
                 <ScrollViewer HorizontalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" >
                         <StackPanel Orientation="Horizontal">

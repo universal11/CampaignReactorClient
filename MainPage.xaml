@@ -26,7 +26,7 @@
                             <controls:CampaignControl x:Name="campaignControl" client="{x:Bind client}"/>
                         </PivotItem>
                         <PivotItem x:Name="serverPivotItem" Header="Servers" TabIndex="2">
-                            <controls:ServerControl x:Name="serverControl" />
+                            <controls:ServerControl x:Name="serverControl" client="{x:Bind client}"/>
                         </PivotItem>
                         <PivotItem x:Name="subscriberPivotItem" Header="Subscribers" TabIndex="3">
                             <controls:SubscriberControl x:Name="subscriberControl" />

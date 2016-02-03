@@ -23,17 +23,9 @@ namespace CampaignReactorClient {
         }
         */
 
-            /*
-        public void initHeaders(RestRequest request) {
-            // easily add HTTP Headers
-            //request.AddHeader("header", "value");
-            //request.RequestFormat = RestSharp.DataFormat.Json;
-        }
-        */
 
         public string getAPIUri() {
             return $"http://192.168.1.146:3579";
-            //return new Uri($"http://localhost:3579");
 
         }
 
@@ -49,50 +41,39 @@ namespace CampaignReactorClient {
             return campaign;
         }
 
-        /*
+        public Server getServerById(int id) {
 
-        public static string getResponse(byte[] data) {
-            return System.Text.Encoding.UTF8.GetString(data);
+            Server server = new Server();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/server/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                server = JsonConvert.DeserializeObject<Server>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return server;
         }
 
-        public List<Campaign> getAllCampaigns() {
+        public List<Campaign> searchCampaigns(string query) {
             List<Campaign> campaigns = new List<Campaign>();
-            RestClient client = new RestClient(this.getAPIUri());
 
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("campaign", HttpHttpMethod.Get);
-            this.initHeaders(request);
-
-            // execute the request
-
-            client.ExecuteAsync(request, response => {
-                return JsonConvert.DeserializeObject<List<Campaign>>(response.Content);
-            });
-
-            var task = client.ExecuteAsync(request, response => {
-                JsonConvert.DeserializeObject<List<Campaign>>(response.Content);
-            }).WebRequest;
-
-            task.WebRequest.wait();
-
-            return task.Result;
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/campaign/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                campaigns = JsonConvert.DeserializeObject<List<Campaign>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return campaigns;
 
         }
 
-        public List<Campaign> getCampaignsByName(string name) {
-            List<Campaign> campaigns = new List<Campaign>();
-            RestClient client = new RestClient(this.getAPIUri());
+        public List<Server> searchServers(string query) {
+            List<Server> servers = new List<Server>();
 
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"campaign/name/{name}", HttpMethod.Get);
-            this.initHeaders(request);
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/server/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                servers = JsonConvert.DeserializeObject<List<Server>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return servers;
 
-            // execute the request
-            IRestResponse response = client.Execute(request).Result;
-
-            return JsonConvert.DeserializeObject<List<Campaign>>(CampaignReactor.getResponse(response.RawBytes));
         }
-        */
+
         public List<Campaign> getEnabledCampaigns() {
             List<Campaign> campaigns = new List<Campaign>();
 
@@ -215,6 +196,18 @@ namespace CampaignReactorClient {
 
         }
 
+        public int updateServer(Server server) {
+
+            int response = 0;
+
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/server/update", JsonConvert.SerializeObject(server));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
+        }
+
         /*
         public int updateServer(Server server) {
             RestClient client = new RestClient(this.getAPIUri());
@@ -284,6 +277,15 @@ namespace CampaignReactorClient {
         public int createCampaign(Campaign campaign) {
             int response = 0;
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/campaign/create", JsonConvert.SerializeObject(campaign));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
+        public int createServer(Server server) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/server/create", JsonConvert.SerializeObject(server));
             if (httpResponseMessage.IsSuccessStatusCode) {
                 response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }

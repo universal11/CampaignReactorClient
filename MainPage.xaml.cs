@@ -38,7 +38,7 @@ namespace CampaignReactorClient{
         }
 
         private void init() {
-            this.initCampaignControl();
+            //this.initCampaignControl();
         }
 
         private void initCampaignControl() {
@@ -55,11 +55,11 @@ namespace CampaignReactorClient{
 
             }
             else if (pivot.SelectedIndex.Equals(campaignPivotItem.TabIndex)) {
-                this.campaignControl.loadEnabledCampaigns();
+                //this.campaignControl.loadEnabledCampaigns();
                 
             }
             else if (pivot.SelectedIndex.Equals(serverPivotItem.TabIndex)) {
-                this.serverControl.loadServers(this.client.getEnabledServers());
+                //this.serverControl.loadServers(this.client.getEnabledServers());
 
             }
             else if (pivot.SelectedIndex.Equals(subscriberPivotItem.TabIndex)) {

@@ -128,7 +128,7 @@ namespace CampaignReactorClient.Controls {
             this.selectedServer = server;
             this.newServer = new Server();
             MainPage.showDialogue("Server Created!");
-            this.pivot.SelectedIndex = browsePivotItem.TabIndex;
+            this.pivot.SelectedIndex = viewPivotItem.TabIndex;
         }
 
         private void updateButton_Click(object sender, RoutedEventArgs e) {

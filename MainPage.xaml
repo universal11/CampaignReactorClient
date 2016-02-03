@@ -29,7 +29,7 @@
                             <controls:ServerControl x:Name="serverControl" client="{x:Bind client}"/>
                         </PivotItem>
                         <PivotItem x:Name="subscriberPivotItem" Header="Subscribers" TabIndex="3">
-                            <controls:SubscriberControl x:Name="subscriberControl" />
+                            <controls:SubscriberControl x:Name="subscriberControl" client="{x:Bind client}"/>
                         </PivotItem>
                         <PivotItem x:Name="botPivotItem" Header="Bot" TabIndex="4">Bot
                         

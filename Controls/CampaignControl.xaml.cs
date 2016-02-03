@@ -143,7 +143,7 @@ namespace CampaignReactorClient.Controls {
             this.selectedCampaign = campaign;
             this.newCampaign = new Campaign();
             MainPage.showDialogue("Campaign Created!");
-            this.pivot.SelectedIndex = browsePivotItem.TabIndex;
+            this.pivot.SelectedIndex = viewPivotItem.TabIndex;
         }
 
         private void updateButton_Click(object sender, RoutedEventArgs e) {

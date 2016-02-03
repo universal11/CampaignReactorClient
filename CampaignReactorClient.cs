@@ -25,7 +25,7 @@ namespace CampaignReactorClient {
 
 
         public string getAPIUri() {
-            return $"http://192.168.1.146:3579";
+            return $"http://192.168.1.133:3579";
 
         }
 
@@ -52,6 +52,17 @@ namespace CampaignReactorClient {
             return server;
         }
 
+        public Subscriber getSubscriberById(int id) {
+
+            Subscriber subscriber = new Subscriber();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/subscriber/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                subscriber = JsonConvert.DeserializeObject<Subscriber>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return subscriber;
+        }
+
         public List<Campaign> searchCampaigns(string query) {
             List<Campaign> campaigns = new List<Campaign>();
 
@@ -74,6 +85,17 @@ namespace CampaignReactorClient {
 
         }
 
+        public List<Subscriber> searchSubscribers(string query) {
+            List<Subscriber> subscribers = new List<Subscriber>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/subscriber/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                subscribers = JsonConvert.DeserializeObject<List<Subscriber>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return subscribers;
+
+        }
+
         public List<Campaign> getEnabledCampaigns() {
             List<Campaign> campaigns = new List<Campaign>();
 
@@ -83,6 +105,17 @@ namespace CampaignReactorClient {
             }
             return campaigns;
              
+        }
+
+        public List<Subscriber> getEnabledSubscribers() {
+            List<Subscriber> subscribers = new List<Subscriber>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/subscriber/enabled");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                subscribers = JsonConvert.DeserializeObject<List<Subscriber>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return subscribers;
+
         }
 
         public HttpResponseMessage httpPost(string url, string data) {
@@ -171,7 +204,7 @@ namespace CampaignReactorClient {
 
             return JsonConvert.DeserializeObject<List<Bot>>(CampaignReactor.getResponse(response.RawBytes));
         }
-        */
+        
         public List<Subscriber> getEnabledSubscribers() {
 
             List<Subscriber> subscribers = new List<Subscriber>();
@@ -182,8 +215,9 @@ namespace CampaignReactorClient {
             }
             return subscribers;
         }
+        */
 
-        
+
         public int updateCampaign(Campaign campaign) {
 
             int response = 0;
@@ -201,6 +235,18 @@ namespace CampaignReactorClient {
             int response = 0;
 
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/server/update", JsonConvert.SerializeObject(server));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
+        }
+
+        public int updateSubscriber(Subscriber subscriber) {
+
+            int response = 0;
+
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/subscriber/update", JsonConvert.SerializeObject(subscriber));
             if (httpResponseMessage.IsSuccessStatusCode) {
                 response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }
@@ -286,6 +332,15 @@ namespace CampaignReactorClient {
         public int createServer(Server server) {
             int response = 0;
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/server/create", JsonConvert.SerializeObject(server));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
+        public int createSubscriber(Subscriber subscriber) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/subscriber/create", JsonConvert.SerializeObject(subscriber));
             if (httpResponseMessage.IsSuccessStatusCode) {
                 response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }

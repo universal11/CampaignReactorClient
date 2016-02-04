@@ -31,10 +31,12 @@
                         <PivotItem x:Name="subscriberPivotItem" Header="Subscribers" TabIndex="3">
                             <controls:SubscriberControl x:Name="subscriberControl" client="{x:Bind client}"/>
                         </PivotItem>
-                        <PivotItem x:Name="botPivotItem" Header="Bot" TabIndex="4">Bot
-                        
+                        <PivotItem x:Name="botPivotItem" Header="Bot" TabIndex="4">
+                            <controls:BotControl x:Name="botControl" client="{x:Bind client}" />
                         </PivotItem>
-                        <PivotItem x:Name="bitlyAccountPivotItem" Header="Bitly Account" TabIndex="5">Bitly Account</PivotItem>
+                        <PivotItem x:Name="bitlyAccountPivotItem" Header="Bitly Account" TabIndex="5">
+                            <controls:BitlyAccountControl x:Name="bitlyAccountControl" client="{x:Bind client}" />
+                        </PivotItem>
                     </Pivot>
                     <!--
                     <Button x:Name="togglePaneButton" Width="200" Height="50" Click="togglePaneButton_Click" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></Button>

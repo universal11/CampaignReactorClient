@@ -1,0 +1,122 @@
+﻿<UserControl
+    x:Class="CampaignReactorClient.Controls.BotControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CampaignReactorClient.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400" DataContext="{Binding RelativeSource={RelativeSource self}}">
+
+    <Grid>
+        <Pivot x:Name="pivot" SelectionChanged="Pivot_SelectionChanged">
+
+            <PivotItem x:Name="browsePivotItem" Header="Browse" TabIndex="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="searchTextBox" Width="auto" Text="" TextChanged="searchTextBox_TextChanged" />
+                    <Button x:Name="searchButton" Content="Search" Grid.Column="1" Click="searchButton_Click" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.ColumnSpan="2">
+                        <ListView x:Name="listView" ItemsSource="{x:Bind bots}" SelectionChanged="listView_SelectionChanged">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Height="50" Width="50" Source="{Binding Path=imageUrl}" />
+                                        <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Path=emailAddress}" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Path=fullName }" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+
+
+                </Grid>
+            </PivotItem>
+            <PivotItem x:Name="viewPivotItem" Header="View" TabIndex="1" Visibility="{x:Bind viewPivotItemVisibility, Mode=TwoWay}">
+                <ScrollViewer HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="image" Height="50" Width="100" Source="{Binding Path=selectedBot.imageUrl}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="ID" Text="{Binding Path=selectedBot.id, Mode=TwoWay}" Width="200" IsEnabled="False" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Date Created" Text="{Binding Path=selectedBot.dateCreated, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Email Address" Text="{Binding Path=selectedBot.emailAddress, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Password" Text="{Binding Path=selectedBot.password, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Phone Number" Text="{Binding Path=selectedBot.phoneNumber, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="First Name" Text="{Binding Path=selectedBot.firstName, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Last Name" Text="{Binding Path=selectedBot.lastName, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Last Send" Text="{Binding Path=selectedBot.lastSendDate, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Image Url" Text="{Binding Path=selectedBot.imageUrl, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Number of Subscribers" Text="{Binding Path=selectedBot.numberOfSubscribers, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleSwitch x:Name="enableSwitch" Header="Enabled" IsOn="{Binding Path=selectedBot.enabled, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <Button x:Name="updateButton" Content="Update" Click="updateButton_Click" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+            <PivotItem x:Name="addPivotItem" Header="Add" TabIndex="2">
+                <ScrollViewer HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Email Address" Text="{Binding Path=newBot.emailAddress, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Password" Text="{Binding Path=newBot.password, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Phone Number" Text="{Binding Path=newBot.phoneNumber, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="First Name" Text="{Binding Path=newBot.firstName, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Last Name" Text="{Binding Path=newBot.lastName, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Header="Image Url" Text="{Binding Path=newBot.imageUrl, Mode=TwoWay}" Width="200" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <Button x:Name="addButton" Content="Add" Background="#548E19" Click="addButton_Click">
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+        </Pivot>
+    </Grid>
+</UserControl>

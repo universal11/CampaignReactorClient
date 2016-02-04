@@ -63,7 +63,7 @@ namespace CampaignReactorClient{
 
             }
             else if (pivot.SelectedIndex.Equals(subscriberPivotItem.TabIndex)) {
-                this.subscriberControl.loadSubscribers(this.client.getEnabledSubscribers());
+                //this.subscriberControl.loadSubscribers(this.client.getEnabledSubscribers());
             }
             else if (pivot.SelectedIndex.Equals(botPivotItem.TabIndex)) {
 

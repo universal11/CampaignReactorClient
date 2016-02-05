@@ -105,6 +105,9 @@
     <Compile Include="Controls\CampaignControl.xaml.cs">
       <DependentUpon>CampaignControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HostControl.xaml.cs">
+      <DependentUpon>HostControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ServerControl.xaml.cs">
       <DependentUpon>ServerControl.xaml</DependentUpon>
     </Compile>
@@ -147,6 +150,10 @@
     <Page Include="Controls\CampaignControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\HostControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ServerControl.xaml">
       <SubType>Designer</SubType>

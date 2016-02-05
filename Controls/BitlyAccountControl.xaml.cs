@@ -77,7 +77,7 @@ namespace CampaignReactorClient.Controls {
                 this.loadBitlyAccounts(this.client.searchBitlyAccounts(this.searchTextBox.Text));
             }
             else {
-                this.loadBitlyAccounts(new List<BitlyAccount>());
+                this.loadEnabledBitlyAccounts();
             }
         }
 

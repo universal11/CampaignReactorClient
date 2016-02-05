@@ -25,7 +25,7 @@ namespace CampaignReactorClient {
 
 
         public string getAPIUri() {
-            return $"http://192.168.1.133:3579";
+            return $"http://campaignreactor.com:3579";
 
         }
 
@@ -50,6 +50,28 @@ namespace CampaignReactorClient {
                 server = JsonConvert.DeserializeObject<Server>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }
             return server;
+        }
+
+        public Host getHostById(int id) {
+
+            Host host = new Host();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/host/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                host = JsonConvert.DeserializeObject<Host>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return host;
+        }
+
+        public List<Host> getHostsByServerId(int id) {
+
+            List<Host> hosts = new List<Host>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/host/server/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                hosts = JsonConvert.DeserializeObject<List<Host>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return hosts;
         }
 
         public Subscriber getSubscriberById(int id) {
@@ -104,6 +126,17 @@ namespace CampaignReactorClient {
                 servers = JsonConvert.DeserializeObject<List<Server>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }
             return servers;
+
+        }
+
+        public List<Host> searchHosts(string query) {
+            List<Host> hosts = new List<Host>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/host/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                hosts = JsonConvert.DeserializeObject<List<Host>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return hosts;
 
         }
 
@@ -214,6 +247,16 @@ namespace CampaignReactorClient {
             return servers;
         }
 
+        public List<Host> getEnabledHosts() {
+            List<Host> hosts = new List<Host>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/host/enabled");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                hosts = JsonConvert.DeserializeObject<List<Host>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return hosts;
+        }
+
         /*
         public List<Host> getEnabledHosts() {
             //List<Server> servers = new List<Server>();
@@ -301,6 +344,18 @@ namespace CampaignReactorClient {
             int response = 0;
 
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/server/update", JsonConvert.SerializeObject(server));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
+        }
+
+        public int updateHost(Host host) {
+
+            int response = 0;
+
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/host/update", JsonConvert.SerializeObject(host));
             if (httpResponseMessage.IsSuccessStatusCode) {
                 response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }
@@ -423,6 +478,15 @@ namespace CampaignReactorClient {
         public int createServer(Server server) {
             int response = 0;
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/server/create", JsonConvert.SerializeObject(server));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
+        public int createHost(Host host) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/host/create", JsonConvert.SerializeObject(host));
             if (httpResponseMessage.IsSuccessStatusCode) {
                 response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }

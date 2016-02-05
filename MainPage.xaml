@@ -37,6 +37,9 @@
                         <PivotItem x:Name="bitlyAccountPivotItem" Header="Bitly Account" TabIndex="5">
                             <controls:BitlyAccountControl x:Name="bitlyAccountControl" client="{x:Bind client}" />
                         </PivotItem>
+                        <PivotItem x:Name="hostPivotItem" Header="Host" TabIndex="6">
+                            <controls:HostControl x:Name="hostControl" client="{x:Bind client}" />
+                        </PivotItem>
                     </Pivot>
                     <!--
                     <Button x:Name="togglePaneButton" Width="200" Height="50" Click="togglePaneButton_Click" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></Button>

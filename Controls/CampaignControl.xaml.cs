@@ -91,7 +91,7 @@ namespace CampaignReactorClient.Controls {
                 this.loadCampaigns(this.client.searchCampaigns(this.searchTextBox.Text));
             }
             else {
-                this.loadCampaigns(new List<Campaign>());
+                this.loadEnabledCampaigns();
             }
         }
 

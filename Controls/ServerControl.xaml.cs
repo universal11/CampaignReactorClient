@@ -65,6 +65,7 @@ namespace CampaignReactorClient.Controls {
             }
         }
 
+
         private void NotifyPropertyChanged(string name) {
             if (PropertyChanged != null) {
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
@@ -76,7 +77,7 @@ namespace CampaignReactorClient.Controls {
                 this.loadServers(this.client.searchServers(this.searchTextBox.Text));
             }
             else {
-                this.loadServers(new List<Server>());
+                this.loadEnabledServers();
             }
         }
 
@@ -144,5 +145,7 @@ namespace CampaignReactorClient.Controls {
         private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e) {
             this.searchServers();
         }
+
+
     }
 }

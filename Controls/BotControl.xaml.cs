@@ -77,7 +77,7 @@ namespace CampaignReactorClient.Controls {
                 this.loadBots(this.client.searchBots(this.searchTextBox.Text));
             }
             else {
-                this.loadBots(new List<Bot>());
+                this.loadEnabledBots();
             }
         }
 

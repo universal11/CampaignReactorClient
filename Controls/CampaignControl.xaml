@@ -80,6 +80,7 @@
                         </StackPanel>
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <Button x:Name="updateButton" Content="Update" Click="updateButton_Click" />
+                            <Button x:Name="sendButton" Margin="10,0,0,0" Content="Send" Click="sendButton_Click" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>

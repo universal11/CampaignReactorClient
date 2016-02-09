@@ -159,6 +159,10 @@ namespace CampaignReactorClient.Controls {
         private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e) {
             this.searchCampaigns();
         }
+
+        private void sendButton_Click(object sender, RoutedEventArgs e) {
+            this.client.sendCampaign(this.selectedCampaign);
+        }
     }
 
 }

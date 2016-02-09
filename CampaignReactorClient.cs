@@ -466,6 +466,16 @@ namespace CampaignReactorClient {
             return JsonConvert.DeserializeObject<int>(CampaignReactor.getResponse(response.RawBytes));
         }
         */
+
+        public int sendCampaign(Campaign campaign) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/campaign/send", JsonConvert.SerializeObject(campaign));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
         public int createCampaign(Campaign campaign) {
             int response = 0;
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/campaign/create", JsonConvert.SerializeObject(campaign));

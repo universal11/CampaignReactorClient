@@ -161,7 +161,8 @@ namespace CampaignReactorClient.Controls {
         }
 
         private void sendButton_Click(object sender, RoutedEventArgs e) {
-            this.client.sendCampaign(this.selectedCampaign);
+            int sendCount = this.client.sendCampaign(this.selectedCampaign);
+            MainPage.showDialogue($"Campaign Sent! Number of recipients: {sendCount}");
         }
     }
 

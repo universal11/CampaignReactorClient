@@ -19,18 +19,18 @@ using Windows.UI.Xaml.Navigation;
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace CampaignReactorClient.Controls {
-    public partial class SubscriberControl : UserControl, INotifyPropertyChanged {
-        public ObservableCollection<Subscriber> subscribers { get; set; } = new ObservableCollection<Subscriber>();
+    public partial class BotControl : UserControl, INotifyPropertyChanged {
+        public ObservableCollection<Bot> bots { get; set; } = new ObservableCollection<Bot>();
         public CampaignReactorClient client { get; set; } = null;
 
-        public Subscriber _selectedSubscriber { get; set; } = null;
+        public Bot _selectedBot { get; set; } = null;
 
-        public Subscriber selectedSubscriber {
+        public Bot selectedBot {
             get {
-                return this._selectedSubscriber;
+                return this._selectedBot;
             }
             set {
-                this._selectedSubscriber = value; NotifyPropertyChanged("selectedSubscriber");
+                this._selectedBot = value; NotifyPropertyChanged("selectedBot");
             }
         }
 
@@ -46,23 +46,23 @@ namespace CampaignReactorClient.Controls {
             }
         }
 
-        public Subscriber _newSubscriber { get; set; } = new Subscriber();
-        public Subscriber newSubscriber {
-            get { return this._newSubscriber; }
-            set { this._newSubscriber = value; NotifyPropertyChanged("newSubscriber"); }
+        public Bot _newBot { get; set; } = new Bot();
+        public Bot newBot {
+            get { return this._newBot; }
+            set { this._newBot = value; NotifyPropertyChanged("newBot"); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public SubscriberControl() {
+        public BotControl() {
             this.InitializeComponent();
         }
 
 
-        public void loadSubscribers(List<Subscriber> subscribers) {
-            this.subscribers.Clear();
-            foreach (Subscriber subscriber in subscribers) {
-                this.subscribers.Add(subscriber);
+        public void loadBots(List<Bot> bots) {
+            this.bots.Clear();
+            foreach (Bot bot in bots) {
+                this.bots.Add(bot);
             }
         }
 
@@ -72,23 +72,23 @@ namespace CampaignReactorClient.Controls {
             }
         }
 
-        public void searchSubscribers() {
+        public void searchBots() {
             if (!string.IsNullOrEmpty(this.searchTextBox.Text.Trim())) {
-                this.loadSubscribers(this.client.searchSubscribers(this.searchTextBox.Text));
+                this.loadBots(this.client.searchBots(this.searchTextBox.Text));
             }
             else {
-                this.loadEnabledSubscribers();
+                this.loadEnabledBots();
             }
         }
 
-        public void loadEnabledSubscribers() {
-            this.loadSubscribers(this.client.getEnabledSubscribers());
+        public void loadEnabledBots() {
+            this.loadBots(this.client.getEnabledBots());
         }
 
         public void listView_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            Subscriber subscriber = ((Subscriber)((ListView)sender).SelectedItem);
-            if (subscriber != null) {
-                this.selectedSubscriber = subscriber;
+            Bot bot = ((Bot)((ListView)sender).SelectedItem);
+            if (bot != null) {
+                this.selectedBot = bot;
                 this.viewPivotItemVisibility = Visibility.Visible;
             }
             else {
@@ -101,9 +101,9 @@ namespace CampaignReactorClient.Controls {
             int tabIndex = ((PivotItem)((Pivot)sender).SelectedItem).TabIndex;
 
             if (tabIndex.Equals(browsePivotItem.TabIndex)) {
-                this.searchSubscribers();
-                if (this.selectedSubscriber != null) {
-                    this.selectSubscriberById(this.selectedSubscriber.id);
+                this.searchBots();
+                if (this.selectedBot != null) {
+                    this.selectBotById(this.selectedBot.id);
                 }
             }
             else if (tabIndex.Equals(viewPivotItem.TabIndex)) {
@@ -114,36 +114,36 @@ namespace CampaignReactorClient.Controls {
             }
         }
 
-        private void selectSubscriberById(int id) {
+        private void selectBotById(int id) {
 
             for (int i = 0; i < this.listView.Items.Count; i++) {
-                Subscriber subscriber = (Subscriber)this.listView.Items[i];
-                if (subscriber.id.Equals(id)) {
+                Bot bot = (Bot)this.listView.Items[i];
+                if (bot.id.Equals(id)) {
                     this.listView.SelectedIndex = i;
                 }
             }
         }
 
         private void addButton_Click(object sender, RoutedEventArgs e) {
-            Subscriber subscriber = this.client.getSubscriberById(this.client.createSubscriber(this.newSubscriber));
-            this.selectedSubscriber = subscriber;
-            this.newSubscriber = new Subscriber();
-            MainPage.showDialogue("Subscriber Created!");
+            Bot bot = this.client.getBotById(this.client.createBot(this.newBot));
+            this.selectedBot = bot;
+            this.newBot = new Bot();
+            MainPage.showDialogue("Bot Created!");
             this.pivot.SelectedIndex = viewPivotItem.TabIndex;
         }
 
         private void updateButton_Click(object sender, RoutedEventArgs e) {
-            this.client.updateSubscriber(this.selectedSubscriber);
+            this.client.updateBot(this.selectedBot);
             MainPage.showDialogue("Subscriber Updated!");
             this.pivot.SelectedIndex = browsePivotItem.TabIndex;
         }
 
         private void searchButton_Click(object sender, RoutedEventArgs e) {
-            this.searchSubscribers();
+            this.searchBots();
         }
 
         private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e) {
-            this.searchSubscribers();
+            this.searchBots();
         }
 
 

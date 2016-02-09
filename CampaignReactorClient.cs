@@ -23,17 +23,9 @@ namespace CampaignReactorClient {
         }
         */
 
-            /*
-        public void initHeaders(RestRequest request) {
-            // easily add HTTP Headers
-            //request.AddHeader("header", "value");
-            //request.RequestFormat = RestSharp.DataFormat.Json;
-        }
-        */
 
         public string getAPIUri() {
-            return $"http://192.168.1.146:3579";
-            //return new Uri($"http://localhost:3579");
+            return $"http://192.168.1.133:3579";
 
         }
 
@@ -49,50 +41,138 @@ namespace CampaignReactorClient {
             return campaign;
         }
 
-        /*
+        public Server getServerById(int id) {
 
-        public static string getResponse(byte[] data) {
-            return System.Text.Encoding.UTF8.GetString(data);
+            Server server = new Server();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/server/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                server = JsonConvert.DeserializeObject<Server>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return server;
         }
 
-        public List<Campaign> getAllCampaigns() {
+        public Host getHostById(int id) {
+
+            Host host = new Host();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/host/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                host = JsonConvert.DeserializeObject<Host>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return host;
+        }
+
+        public List<Host> getHostsByServerId(int id) {
+
+            List<Host> hosts = new List<Host>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/host/server/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                hosts = JsonConvert.DeserializeObject<List<Host>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return hosts;
+        }
+
+        public Subscriber getSubscriberById(int id) {
+
+            Subscriber subscriber = new Subscriber();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/subscriber/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                subscriber = JsonConvert.DeserializeObject<Subscriber>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return subscriber;
+        }
+
+        public Bot getBotById(int id) {
+
+            Bot bot = new Bot();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/bot/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                bot = JsonConvert.DeserializeObject<Bot>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return bot;
+        }
+
+        public BitlyAccount getBitlyAccountById(int id) {
+
+            BitlyAccount bitlyAccount = new BitlyAccount();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/bitly_account/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                bitlyAccount = JsonConvert.DeserializeObject<BitlyAccount>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return bitlyAccount;
+        }
+
+        public List<Campaign> searchCampaigns(string query) {
             List<Campaign> campaigns = new List<Campaign>();
-            RestClient client = new RestClient(this.getAPIUri());
 
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest("campaign", HttpHttpMethod.Get);
-            this.initHeaders(request);
-
-            // execute the request
-
-            client.ExecuteAsync(request, response => {
-                return JsonConvert.DeserializeObject<List<Campaign>>(response.Content);
-            });
-
-            var task = client.ExecuteAsync(request, response => {
-                JsonConvert.DeserializeObject<List<Campaign>>(response.Content);
-            }).WebRequest;
-
-            task.WebRequest.wait();
-
-            return task.Result;
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/campaign/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                campaigns = JsonConvert.DeserializeObject<List<Campaign>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return campaigns;
 
         }
 
-        public List<Campaign> getCampaignsByName(string name) {
-            List<Campaign> campaigns = new List<Campaign>();
-            RestClient client = new RestClient(this.getAPIUri());
+        public List<Server> searchServers(string query) {
+            List<Server> servers = new List<Server>();
 
-            // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            RestRequest request = new RestRequest($"campaign/name/{name}", HttpMethod.Get);
-            this.initHeaders(request);
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/server/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                servers = JsonConvert.DeserializeObject<List<Server>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return servers;
 
-            // execute the request
-            IRestResponse response = client.Execute(request).Result;
-
-            return JsonConvert.DeserializeObject<List<Campaign>>(CampaignReactor.getResponse(response.RawBytes));
         }
-        */
+
+        public List<Host> searchHosts(string query) {
+            List<Host> hosts = new List<Host>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/host/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                hosts = JsonConvert.DeserializeObject<List<Host>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return hosts;
+
+        }
+
+        public List<Subscriber> searchSubscribers(string query) {
+            List<Subscriber> subscribers = new List<Subscriber>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/subscriber/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                subscribers = JsonConvert.DeserializeObject<List<Subscriber>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return subscribers;
+
+        }
+
+        public List<Bot> searchBots(string query) {
+            List<Bot> bots = new List<Bot>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/bot/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                bots = JsonConvert.DeserializeObject<List<Bot>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return bots;
+
+        }
+
+        public List<BitlyAccount> searchBitlyAccounts(string query) {
+            List<BitlyAccount> bitlyAccounts = new List<BitlyAccount>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/bitly_account/search/{query}");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                bitlyAccounts = JsonConvert.DeserializeObject<List<BitlyAccount>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return bitlyAccounts;
+
+        }
+
         public List<Campaign> getEnabledCampaigns() {
             List<Campaign> campaigns = new List<Campaign>();
 
@@ -102,6 +182,39 @@ namespace CampaignReactorClient {
             }
             return campaigns;
              
+        }
+
+        public List<Subscriber> getEnabledSubscribers() {
+            List<Subscriber> subscribers = new List<Subscriber>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/subscriber/enabled");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                subscribers = JsonConvert.DeserializeObject<List<Subscriber>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return subscribers;
+
+        }
+
+        public List<Bot> getEnabledBots() {
+            List<Bot> bots = new List<Bot>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/bot/enabled");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                bots = JsonConvert.DeserializeObject<List<Bot>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return bots;
+
+        }
+
+        public List<BitlyAccount> getEnabledBitlyAccounts() {
+            List<BitlyAccount> bitlyAccounts = new List<BitlyAccount>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/bitly_account/enabled");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                bitlyAccounts = JsonConvert.DeserializeObject<List<BitlyAccount>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return bitlyAccounts;
+
         }
 
         public HttpResponseMessage httpPost(string url, string data) {
@@ -132,6 +245,16 @@ namespace CampaignReactorClient {
                 servers = JsonConvert.DeserializeObject<List<Server>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }
             return servers;
+        }
+
+        public List<Host> getEnabledHosts() {
+            List<Host> hosts = new List<Host>();
+
+            HttpResponseMessage httpResponseMessage = this.httpGet($"{this.getAPIUri()}/host/enabled");
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                hosts = JsonConvert.DeserializeObject<List<Host>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return hosts;
         }
 
         /*
@@ -190,7 +313,7 @@ namespace CampaignReactorClient {
 
             return JsonConvert.DeserializeObject<List<Bot>>(CampaignReactor.getResponse(response.RawBytes));
         }
-        */
+        
         public List<Subscriber> getEnabledSubscribers() {
 
             List<Subscriber> subscribers = new List<Subscriber>();
@@ -201,13 +324,75 @@ namespace CampaignReactorClient {
             }
             return subscribers;
         }
+        */
 
-        
+
         public int updateCampaign(Campaign campaign) {
 
             int response = 0;
 
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/campaign/update", JsonConvert.SerializeObject(campaign));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
+        }
+
+        public int updateServer(Server server) {
+
+            int response = 0;
+
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/server/update", JsonConvert.SerializeObject(server));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
+        }
+
+        public int updateHost(Host host) {
+
+            int response = 0;
+
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/host/update", JsonConvert.SerializeObject(host));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
+        }
+
+        public int updateSubscriber(Subscriber subscriber) {
+
+            int response = 0;
+
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/subscriber/update", JsonConvert.SerializeObject(subscriber));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
+        }
+
+
+        public int updateBot(Bot bot) {
+
+            int response = 0;
+
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/bot/update", JsonConvert.SerializeObject(bot));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+
+        }
+
+        public int updateBitlyAccount(BitlyAccount bitlyAccount) {
+
+            int response = 0;
+
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/bitly_account/update", JsonConvert.SerializeObject(bitlyAccount));
             if (httpResponseMessage.IsSuccessStatusCode) {
                 response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }
@@ -281,9 +466,64 @@ namespace CampaignReactorClient {
             return JsonConvert.DeserializeObject<int>(CampaignReactor.getResponse(response.RawBytes));
         }
         */
+
+        public int sendCampaign(Campaign campaign) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/campaign/send", JsonConvert.SerializeObject(campaign));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
         public int createCampaign(Campaign campaign) {
             int response = 0;
             HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/campaign/create", JsonConvert.SerializeObject(campaign));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
+        public int createServer(Server server) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/server/create", JsonConvert.SerializeObject(server));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
+        public int createHost(Host host) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/host/create", JsonConvert.SerializeObject(host));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
+        public int createSubscriber(Subscriber subscriber) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/subscriber/create", JsonConvert.SerializeObject(subscriber));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
+        public int createBot(Bot bot) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/bot/create", JsonConvert.SerializeObject(bot));
+            if (httpResponseMessage.IsSuccessStatusCode) {
+                response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            }
+            return response;
+        }
+
+        public int createBitlyAccount(BitlyAccount bitlyAccount) {
+            int response = 0;
+            HttpResponseMessage httpResponseMessage = this.httpPost($"{this.getAPIUri()}/bitly_account/create", JsonConvert.SerializeObject(bitlyAccount));
             if (httpResponseMessage.IsSuccessStatusCode) {
                 response = JsonConvert.DeserializeObject<int>(httpResponseMessage.Content.ReadAsStringAsync().Result);
             }

@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -15,6 +16,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
+
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -30,7 +33,7 @@ namespace CampaignReactorClient.Controls {
                 return this._selectedCampaign;
             }
             set {
-                this._selectedCampaign = value; NotifyPropertyChanged("selectedCampaign"); ;
+                this._selectedCampaign = value; NotifyPropertyChanged("selectedCampaign");
             }
         }
         
@@ -66,7 +69,6 @@ namespace CampaignReactorClient.Controls {
         }
         */
         public CampaignControl() {
-            this.client = client;
             this.InitializeComponent();
         }
 
@@ -84,7 +86,16 @@ namespace CampaignReactorClient.Controls {
             }
         }
 
-       public void loadEnabledCampaigns() {
+        public void searchCampaigns() {
+            if (!string.IsNullOrEmpty(this.searchTextBox.Text.Trim())) {
+                this.loadCampaigns(this.client.searchCampaigns(this.searchTextBox.Text));
+            }
+            else {
+                this.loadEnabledCampaigns();
+            }
+        }
+
+        public void loadEnabledCampaigns() {
             this.loadCampaigns(this.client.getEnabledCampaigns());
         }
 
@@ -92,10 +103,10 @@ namespace CampaignReactorClient.Controls {
             Campaign campaign = ((Campaign)((ListView)sender).SelectedItem);
             if (campaign != null) {
                 this.selectedCampaign = campaign;
-                viewPivotItem.Visibility = Visibility.Visible;
+                this.viewPivotItemVisibility = Visibility.Visible;
             }
             else {
-                viewPivotItem.Visibility = Visibility.Collapsed;
+                this.viewPivotItemVisibility = Visibility.Collapsed;
             }
             
         }
@@ -104,7 +115,7 @@ namespace CampaignReactorClient.Controls {
             int tabIndex = ( (PivotItem)((Pivot)sender).SelectedItem ).TabIndex;
 
             if (tabIndex.Equals(browsePivotItem.TabIndex)) {
-                this.loadEnabledCampaigns();
+                this.searchCampaigns();
                 if (this.selectedCampaign != null) {
                     this.selectCampaignById(this.selectedCampaign.id);
                 }
@@ -129,20 +140,29 @@ namespace CampaignReactorClient.Controls {
 
         private void addButton_Click(object sender, RoutedEventArgs e) {
             Campaign campaign = this.client.getCampaignById(this.client.createCampaign(this.newCampaign));
-            //this.loadEnabledCampaigns();
-            //this.listView.SelectedItem = campaign;
-            //this.selectedCampaign = (Campaign)this.listView.SelectedItem;
-            //;
+            this.selectedCampaign = campaign;
             this.newCampaign = new Campaign();
             MainPage.showDialogue("Campaign Created!");
-            this.pivot.SelectedIndex = browsePivotItem.TabIndex;
+            this.pivot.SelectedIndex = viewPivotItem.TabIndex;
         }
 
         private void updateButton_Click(object sender, RoutedEventArgs e) {
-            this.client.updateCampaign((Campaign)this.selectedCampaign);
-            //this.selectedCampaign = this.client.getCampaignById(((Campaign)this.selectedCampaign).id);
+            this.client.updateCampaign(this.selectedCampaign);
             MainPage.showDialogue("Campaign Updated!");
             this.pivot.SelectedIndex = browsePivotItem.TabIndex;
+        }
+
+        private void searchButton_Click(object sender, RoutedEventArgs e) {
+           this.searchCampaigns();
+        }
+
+        private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e) {
+            this.searchCampaigns();
+        }
+
+        private void sendButton_Click(object sender, RoutedEventArgs e) {
+            int sendCount = this.client.sendCampaign(this.selectedCampaign);
+            MainPage.showDialogue($"Campaign Sent! Number of recipients: {sendCount}");
         }
     }
 

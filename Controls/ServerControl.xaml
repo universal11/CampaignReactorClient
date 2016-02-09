@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:CampaignReactorClient.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:CampaignReactorClient.Controls" mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="400" DataContext="{Binding RelativeSource={RelativeSource self}}">
 
     <Grid>
@@ -72,6 +71,25 @@
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <Button x:Name="updateButton" Content="Update" Click="updateButton_Click" />
                         </StackPanel>
+
+                        <StackPanel Margin="0,45,0,0" Orientation="Horizontal" >
+                            <Button x:Name="disableHostsButton" Content="Disable All" Click="disableHostsButton_Click" />
+                        </StackPanel>
+
+                        <ListView ItemsSource="{x:Bind hosts}" Header="Hosts">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Height="50" Width="50" Source="https://upload.wikimedia.org/wikipedia/commons/0/09/IP_address_icon.png" />
+                                        <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                                            <ToggleSwitch Header="{Binding Path=address, Mode=TwoWay}" OnContent="On" OffContent="Off" IsOn="{Binding Path=enabled, Mode=TwoWay}" Toggled="ToggleSwitch_Toggled" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        
+                        
                     </StackPanel>
                 </ScrollViewer>
             </PivotItem>

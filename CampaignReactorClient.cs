@@ -25,7 +25,7 @@ namespace CampaignReactorClient {
 
 
         public string getAPIUri() {
-            return $"http://campaignreactor.com:3579";
+            return $"http://192.168.1.133:3579";
 
         }
 

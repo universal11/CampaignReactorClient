@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -21,6 +22,7 @@ using Windows.UI.Xaml.Navigation;
 namespace CampaignReactorClient.Controls {
     public partial class ServerControl : UserControl, INotifyPropertyChanged {
         public ObservableCollection<Server> servers { get; set; } = new ObservableCollection<Server>();
+        public ObservableCollection<Host> hosts { get; set; } = new ObservableCollection<Host>();
         public CampaignReactorClient client { get; set; } = null;
 
         public Server _selectedServer { get; set; } = null;
@@ -62,6 +64,13 @@ namespace CampaignReactorClient.Controls {
             this.servers.Clear();
             foreach (Server server in servers) {
                 this.servers.Add(server);
+            }
+        }
+
+        public void loadHosts(List<Host> hosts) {
+            this.hosts.Clear();
+            foreach (Host host in hosts) {
+                this.hosts.Add(host);
             }
         }
 
@@ -107,7 +116,7 @@ namespace CampaignReactorClient.Controls {
                 }
             }
             else if (tabIndex.Equals(viewPivotItem.TabIndex)) {
-
+                this.loadHosts(this.client.getHostsByServerId(this.selectedServer.id));
             }
             else if (tabIndex.Equals(addPivotItem.TabIndex)) {
 
@@ -146,6 +155,16 @@ namespace CampaignReactorClient.Controls {
             this.searchServers();
         }
 
+        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e) {
+            this.client.updateHost((Host)((ToggleSwitch)sender).DataContext);
+        }
 
+        private void disableHostsButton_Click(object sender, RoutedEventArgs e) {
+            foreach (Host host in hosts) {
+                host.enabled = false;
+                this.client.updateHost(host);
+            }
+            this.loadHosts(this.client.getHostsByServerId(this.selectedServer.id));
+        }
     }
 }

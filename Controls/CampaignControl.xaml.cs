@@ -162,7 +162,13 @@ namespace CampaignReactorClient.Controls {
 
         private void sendButton_Click(object sender, RoutedEventArgs e) {
             int sendCount = this.client.sendCampaign(this.selectedCampaign);
-            MainPage.showDialogue($"Campaign Sent! Number of recipients: {sendCount}");
+            if (sendCount > 0) {
+                MainPage.showDialogue($"Campaign Sent | Bots Dispatched: {sendCount}");
+            }
+            else {
+                MainPage.showDialogue($"Please try again later. No bots currently available!");
+            }
+            
         }
     }
 
